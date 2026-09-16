@@ -6,7 +6,7 @@ echo "🚀 Railway Ubuntu 24.04 VPS (OpenSSH + Pinggy tunnel)"
 echo "   Base: minhdevtry/railway-vps + tunnel: AdityaHalder/railway-vps"
 echo "============================================================"
 
-# 1. Password: env ROOT_PASSWORD / PASSWORD, atau auto-random ala Aditya
+# 1. Password: from env ROOT_PASSWORD / PASSWORD, or auto-random (Aditya style)
 if [[ -n "${ROOT_PASSWORD:-${PASSWORD:-}}" ]]; then
     ROOT_PASS="${ROOT_PASSWORD:-${PASSWORD}}"
 else
@@ -21,7 +21,7 @@ chmod 0755 /var/run/sshd /run/sshd
 chmod 0700 /root/.ssh
 ssh-keygen -A >/dev/null 2>&1 || true
 
-# 3. OpenSSH config (keep-alive ala minhdevtry)
+# 3. OpenSSH config (keep-alive from minhdevtry base)
 cat > /etc/ssh/sshd_config.d/01-railway-ssh.conf << 'EOF'
 Port 22
 ListenAddress 0.0.0.0
@@ -40,24 +40,24 @@ sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config 2>/d
 echo "root:${ROOT_PASS}" | chpasswd
 echo "🔑 Root password: set."
 
-# 5. SSH public key (opsional)
+# 5. SSH public key (optional)
 if [[ -n "${SSH_KEY}" ]]; then
     printf '\n%b\n' "${SSH_KEY}" >> /root/.ssh/authorized_keys
     chmod 0600 /root/.ssh/authorized_keys
     echo "🔑 SSH Public Key loaded."
 fi
 
-# 6. Validasi config
+# 6. Validate config
 if ! /usr/sbin/sshd -t; then
     echo "❌ SSH config invalid!" >&2
     exit 1
 fi
 
-# 7. Start sshd background dulu (biar bisa print tunnel info ala Aditya)
+# 7. Start sshd in background first (so we can print tunnel info Aditya-style)
 /usr/sbin/sshd
 echo "✅ SSH Server running on port 22."
 
-# 8. Pinggy tunnel (ala AdityaHalder/railway-vps, tanpa token tambahan)
+# 8. Pinggy tunnel (AdityaHalder/railway-vps style, no extra token needed)
 echo "🚀 Starting Pinggy tunnel..."
 rm -f /tmp/pinggy.log
 ssh \
@@ -94,5 +94,5 @@ echo "ssh root@$HOST -p $PORT_NUM"
 echo ""
 echo "========================================"
 
-# 9. Keep alive: sshd sudah jalan (background), tahan container
+# 9. Keep alive: sshd already running (background), hold the container
 tail -f /dev/null

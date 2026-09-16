@@ -41,6 +41,6 @@ row "Disk"       "${C_WHITE}${_disk}${C_RESET}"
 row "API/Agent"  "${C_GREEN}Port ${_api_port} (Railway HTTP Ingress)${C_RESET}"
 
 printf '%s\n' "$line"
-printf "  ${C_YELLOW}💡 Tip:${C_RESET} Khi chạy API Server / AI Agent, hãy cho app lắng nghe ở port ${C_WHITE}${_api_port}${C_RESET}\n"
-printf "          để truy cập trực tiếp qua domain Public của Railway!\n"
+printf "  ${C_YELLOW}💡 Tip:${C_RESET} When running an API server / AI agent, bind it to port ${C_WHITE}${_api_port}${C_RESET}\n"
+printf "          to reach it directly via the Railway public domain!\n"
 printf '\n'
